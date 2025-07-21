@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -132,6 +133,26 @@
         
         tr:hover {
             background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        /* CSS mới cho trạng thái thanh toán */
+        .paid-row {
+            background-color: rgba(46, 204, 113, 0.15) !important; /* Màu xanh nhạt */
+        }
+
+        .unpaid-row {
+            background-color: rgba(231, 76, 60, 0.15) !important; /* Màu đỏ nhạt */
+        }
+        /* Đảm bảo hover vẫn hoạt động trên các hàng có màu nền */
+        .paid-row:hover, .unpaid-row:hover {
+            background-color: rgba(52, 152, 219, 0.05) !important; /* Giữ màu hover */
+        }
+        /* Đảm bảo các hàng chẵn không ghi đè màu trạng thái */
+        tr:nth-child(even).paid-row {
+            background-color: rgba(46, 204, 113, 0.15) !important;
+        }
+        tr:nth-child(even).unpaid-row {
+            background-color: rgba(231, 76, 60, 0.15) !important;
         }
         
         input, textarea {
@@ -444,6 +465,7 @@
                         <th>Địa chỉ</th>
                         <th width="100">Số kg</th>
                         <th width="120">Số tiền (đ)</th>
+                        <th width="100">Trạng thái</th> <!-- Cột mới -->
                         <th width="120">Hành động</th>
                     </tr>
                 </thead>
@@ -456,6 +478,7 @@
                         <td id="footer-kg">0</td>
                         <td id="footer-money">0</td>
                         <td></td>
+                        <td></td> <!-- Thêm ô trống cho cột trạng thái -->
                     </tr>
                 </tfoot>
             </table>
@@ -511,6 +534,11 @@
                         <label>Số tiền (đ)</label>
                         <input type="number" id="orderMoney" min="0" placeholder="Nhập số tiền">
                     </div>
+
+                    <div class="input-group">
+                        <input type="checkbox" id="isPaidCheckbox" style="width: auto; margin-right: 10px;">
+                        <label for="isPaidCheckbox" style="display: inline-block;">Đã thanh toán</label>
+                    </div>
                 </div>
             </div>
             
@@ -546,6 +574,7 @@
         const customerAddress = document.getElementById('customerAddress');
         const orderKg = document.getElementById('orderKg');
         const orderMoney = document.getElementById('orderMoney');
+        const isPaidCheckbox = document.getElementById('isPaidCheckbox'); // Thêm dòng này
         
         // Tải dữ liệu khi trang được mở
         document.addEventListener('DOMContentLoaded', () => {
@@ -620,7 +649,8 @@
                 phone: customerPhone.value.trim(),
                 address: customerAddress.value.trim(),
                 kg: kg,
-                money: money
+                money: money,
+                isPaid: isPaidCheckbox.checked // Thêm dòng này
             };
             
             if (editingIndex !== null) {
@@ -645,7 +675,7 @@
             if (orders.length === 0) {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td colspan="7" style="text-align: center; padding: 30px;">
+                    <td colspan="8" style="text-align: center; padding: 30px;"> <!-- Cập nhật colspan thành 8 -->
                         <i class="fas fa-shopping-cart" style="font-size: 3rem; color: var(--gray); margin-bottom: 15px;"></i>
                         <h3>Chưa có đơn hàng nào</h3>
                         <p>Nhấn "Thêm đơn hàng" để bắt đầu</p>
@@ -657,6 +687,8 @@
             
             orders.forEach((order, index) => {
                 const row = document.createElement('tr');
+                // Thêm lớp CSS dựa trên trạng thái thanh toán
+                row.classList.add(order.isPaid ? 'paid-row' : 'unpaid-row');
                 
                 row.innerHTML = `
                     <td>${index + 1}</td>
@@ -665,6 +697,11 @@
                     <td>${order.address || '-'}</td>
                     <td>${order.kg.toFixed(1)}</td>
                     <td>${order.money.toLocaleString('vi-VN')}đ</td>
+                    <td>
+                        <button class="btn-toggle-paid" data-index="${index}" style="background: none; border: none; cursor: pointer; font-size: 1.2rem; color: ${order.isPaid ? 'var(--primary)' : 'var(--danger)'};">
+                            <i class="fas ${order.isPaid ? 'fa-check-circle' : 'fa-times-circle'}"></i>
+                        </button>
+                    </td>
                     <td class="action-buttons">
                         <button class="btn-edit" onclick="editOrder(${index})">
                             <i class="fas fa-edit"></i> Sửa
@@ -676,6 +713,14 @@
                 `;
                 
                 tableBody.appendChild(row);
+            });
+
+            // Thêm sự kiện cho các nút toggle sau khi render bảng
+            document.querySelectorAll('.btn-toggle-paid').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = parseInt(this.dataset.index);
+                    togglePaidStatus(index);
+                });
             });
         }
         
@@ -706,6 +751,7 @@
             customerAddress.value = order.address;
             orderKg.value = order.kg;
             orderMoney.value = order.money;
+            isPaidCheckbox.checked = order.isPaid; // Thêm dòng này
             
             editingIndex = index;
             modalTitle.textContent = "Chỉnh sửa đơn hàng";
@@ -723,6 +769,14 @@
                 updateSummary();
             }
         }
+
+        // Hàm thay đổi trạng thái thanh toán
+        function togglePaidStatus(index) {
+            orders[index].isPaid = !orders[index].isPaid;
+            saveData();
+            renderTable(); // Render lại bảng để cập nhật màu sắc
+            updateSummary(); // Cập nhật lại tổng hợp nếu cần (ví dụ: tổng số đơn đã trả)
+        }
         
         // Hàm reset form nhập liệu
         function resetForm() {
@@ -731,6 +785,7 @@
             customerAddress.value = '';
             orderKg.value = '';
             orderMoney.value = '';
+            isPaidCheckbox.checked = false; // Thêm dòng này
             editingIndex = null;
         }
         
