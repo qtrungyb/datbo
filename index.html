@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -24,6 +23,7 @@
             --dark: #34495e;
             --gray: #95a5a6;
             --border: #dfe6e9;
+            --table-border: #d1d8e0;
         }
         
         body {
@@ -72,28 +72,6 @@
             backdrop-filter: blur(5px);
         }
         
-        .summary {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
-        
-        .summary-item {
-            background: rgba(255,255,255,0.15);
-            padding: 15px 25px;
-            border-radius: 12px;
-            text-align: center;
-            min-width: 150px;
-        }
-        
-        .summary-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-top: 5px;
-        }
-        
         .table-container {
             overflow-x: auto;
             padding: 20px;
@@ -105,53 +83,74 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
         
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             min-width: 700px;
+            border: 1px solid var(--table-border);
+            border-radius: 8px;
+            overflow: hidden;
         }
         
         th {
-            background-color: var(--light);
-            color: var(--dark);
+            background-color: var(--primary-dark);
+            color: white;
             font-weight: 600;
             text-align: left;
             padding: 16px 12px;
-            border-bottom: 2px solid var(--border);
+            border-bottom: 2px solid var(--table-border);
+            border-right: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        th:last-child {
+            border-right: none;
         }
         
         td {
             padding: 14px 12px;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid var(--table-border);
+            border-right: 1px solid var(--table-border);
+            background-color: white;
         }
         
-        tr:nth-child(even) {
-            background-color: rgba(236, 240, 241, 0.3);
+        td:last-child {
+            border-right: none;
         }
         
-        tr:hover {
-            background-color: rgba(52, 152, 219, 0.05);
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:nth-child(even) td {
+            background-color: rgba(236, 240, 241, 0.4);
+        }
+        
+        tr:hover td {
+            background-color: rgba(52, 152, 219, 0.1);
         }
 
         /* CSS mới cho trạng thái thanh toán */
-        .paid-row {
+        .paid-row td {
             background-color: rgba(46, 204, 113, 0.15) !important; /* Màu xanh nhạt */
         }
 
-        .unpaid-row {
+        .unpaid-row td {
             background-color: rgba(231, 76, 60, 0.15) !important; /* Màu đỏ nhạt */
         }
         /* Đảm bảo hover vẫn hoạt động trên các hàng có màu nền */
-        .paid-row:hover, .unpaid-row:hover {
-            background-color: rgba(52, 152, 219, 0.05) !important; /* Giữ màu hover */
+        .paid-row:hover td, .unpaid-row:hover td {
+            background-color: rgba(52, 152, 219, 0.15) !important; /* Giữ màu hover */
         }
         /* Đảm bảo các hàng chẵn không ghi đè màu trạng thái */
-        tr:nth-child(even).paid-row {
+        tr:nth-child(even).paid-row td {
             background-color: rgba(46, 204, 113, 0.15) !important;
         }
-        tr:nth-child(even).unpaid-row {
+        tr:nth-child(even).unpaid-row td {
             background-color: rgba(231, 76, 60, 0.15) !important;
         }
         
@@ -202,6 +201,7 @@
             color: white;
             padding: 12px 24px;
             font-size: 1.1rem;
+            white-space: nowrap;
         }
         
         .btn-secondary {
@@ -266,6 +266,7 @@
             background-color: rgba(46, 204, 113, 0.1);
             color: var(--primary-dark);
             font-size: 1.1rem;
+            border-top: 2px solid var(--table-border);
         }
         
         .instructions {
@@ -390,17 +391,9 @@
                 padding: 6px 15px;
             }
             
-            .summary {
-                gap: 15px;
-            }
-            
-            .summary-item {
-                padding: 12px 15px;
-                min-width: 120px;
-            }
-            
-            .summary-value {
-                font-size: 1.5rem;
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
             }
             
             .input-row {
@@ -415,19 +408,14 @@
                 flex-direction: column;
                 gap: 20px;
             }
+            
+            th, td {
+                padding: 10px 8px;
+                font-size: 0.9rem;
+            }
         }
         
         @media (max-width: 480px) {
-            .summary {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .summary-item {
-                width: 100%;
-                max-width: 250px;
-            }
-            
             .btn-add {
                 width: 100%;
                 justify-content: center;
@@ -437,6 +425,38 @@
                 flex-direction: column;
                 gap: 5px;
             }
+            
+            .modal-content {
+                width: 95%;
+            }
+            
+            th, td {
+                padding: 8px 6px;
+                font-size: 0.85rem;
+            }
+            
+            .btn-edit, .btn-delete {
+                font-size: 0.85rem;
+                padding: 6px 10px;
+            }
+        }
+        
+        .status-text {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .paid-text {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: var(--primary-dark);
+        }
+        
+        .unpaid-text {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: #c0392b;
         }
     </style>
 </head>
@@ -459,14 +479,14 @@
             <table id="orderTable">
                 <thead>
                     <tr>
-                        <th width="50">STT</th>
+                        <th width="40">STT</th>
                         <th>Tên khách hàng</th>
                         <th width="120">Số điện thoại</th>
                         <th>Địa chỉ</th>
-                        <th width="100">Số kg</th>
+                        <th width="80">Số kg</th>
                         <th width="120">Số tiền (đ)</th>
-                        <th width="100">Trạng thái</th> <!-- Cột mới -->
-                        <th width="120">Hành động</th>
+                        <th width="120">Trạng thái</th>
+                        <th width="140">Hành động</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
@@ -478,7 +498,7 @@
                         <td id="footer-kg">0</td>
                         <td id="footer-money">0</td>
                         <td></td>
-                        <td></td> <!-- Thêm ô trống cho cột trạng thái -->
+                        <td></td>
                     </tr>
                 </tfoot>
             </table>
@@ -574,7 +594,7 @@
         const customerAddress = document.getElementById('customerAddress');
         const orderKg = document.getElementById('orderKg');
         const orderMoney = document.getElementById('orderMoney');
-        const isPaidCheckbox = document.getElementById('isPaidCheckbox'); // Thêm dòng này
+        const isPaidCheckbox = document.getElementById('isPaidCheckbox');
         
         // Tải dữ liệu khi trang được mở
         document.addEventListener('DOMContentLoaded', () => {
@@ -650,7 +670,7 @@
                 address: customerAddress.value.trim(),
                 kg: kg,
                 money: money,
-                isPaid: isPaidCheckbox.checked // Thêm dòng này
+                isPaid: isPaidCheckbox.checked
             };
             
             if (editingIndex !== null) {
@@ -675,7 +695,7 @@
             if (orders.length === 0) {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td colspan="8" style="text-align: center; padding: 30px;"> <!-- Cập nhật colspan thành 8 -->
+                    <td colspan="8" style="text-align: center; padding: 30px;">
                         <i class="fas fa-shopping-cart" style="font-size: 3rem; color: var(--gray); margin-bottom: 15px;"></i>
                         <h3>Chưa có đơn hàng nào</h3>
                         <p>Nhấn "Thêm đơn hàng" để bắt đầu</p>
@@ -698,16 +718,19 @@
                     <td>${order.kg.toFixed(1)}</td>
                     <td>${order.money.toLocaleString('vi-VN')}đ</td>
                     <td>
-                        <button class="btn-toggle-paid" data-index="${index}" style="background: none; border: none; cursor: pointer; font-size: 1.2rem; color: ${order.isPaid ? 'var(--primary)' : 'var(--danger)'};">
-                            <i class="fas ${order.isPaid ? 'fa-check-circle' : 'fa-times-circle'}"></i>
-                        </button>
+                        <span class="status-text ${order.isPaid ? 'paid-text' : 'unpaid-text'}">
+                            ${order.isPaid ? 'Đã thanh toán' : 'Chưa thanh toán'}
+                        </span>
                     </td>
                     <td class="action-buttons">
                         <button class="btn-edit" onclick="editOrder(${index})">
-                            <i class="fas fa-edit"></i> Sửa
+                            <i class="fas fa-edit"></i>
                         </button>
                         <button class="btn-delete" onclick="deleteOrder(${index})">
-                            <i class="fas fa-trash"></i> Xóa
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <button class="btn-toggle-paid" data-index="${index}" style="background: var(--secondary); color: white;">
+                            <i class="fas ${order.isPaid ? 'fa-times' : 'fa-check'}"></i>
                         </button>
                     </td>
                 `;
@@ -751,7 +774,7 @@
             customerAddress.value = order.address;
             orderKg.value = order.kg;
             orderMoney.value = order.money;
-            isPaidCheckbox.checked = order.isPaid; // Thêm dòng này
+            isPaidCheckbox.checked = order.isPaid;
             
             editingIndex = index;
             modalTitle.textContent = "Chỉnh sửa đơn hàng";
@@ -774,8 +797,8 @@
         function togglePaidStatus(index) {
             orders[index].isPaid = !orders[index].isPaid;
             saveData();
-            renderTable(); // Render lại bảng để cập nhật màu sắc
-            updateSummary(); // Cập nhật lại tổng hợp nếu cần (ví dụ: tổng số đơn đã trả)
+            renderTable();
+            updateSummary();
         }
         
         // Hàm reset form nhập liệu
@@ -785,7 +808,7 @@
             customerAddress.value = '';
             orderKg.value = '';
             orderMoney.value = '';
-            isPaidCheckbox.checked = false; // Thêm dòng này
+            isPaidCheckbox.checked = false;
             editingIndex = null;
         }
         
