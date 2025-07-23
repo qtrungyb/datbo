@@ -80,11 +80,8 @@
         
         .table-header {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            justify-content: flex-end;
             margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 15px;
         }
         
         table {
@@ -101,10 +98,10 @@
             background-color: var(--primary-dark);
             color: white;
             font-weight: 600;
-            text-align: left;
             padding: 16px 12px;
             border-bottom: 2px solid var(--table-border);
             border-right: 1px solid rgba(255,255,255,0.2);
+            text-align: center;
         }
         
         th:last-child {
@@ -116,6 +113,7 @@
             border-bottom: 1px solid var(--table-border);
             border-right: 1px solid var(--table-border);
             background-color: white;
+            text-align: center;
         }
         
         td:last-child {
@@ -126,6 +124,11 @@
             border-bottom: none;
         }
         
+        /* Căn trái cho tên và địa chỉ */
+        td:nth-child(2), td:nth-child(4) {
+            text-align: left;
+        }
+        
         tr:nth-child(even) td {
             background-color: rgba(236, 240, 241, 0.4);
         }
@@ -134,22 +137,23 @@
             background-color: rgba(52, 152, 219, 0.1);
         }
 
-        /* CSS mới cho trạng thái thanh toán */
+        /* CSS cho trạng thái thanh toán */
         .paid-row td {
-            background-color: rgba(46, 204, 113, 0.15) !important; /* Màu xanh nhạt */
+            background-color: rgba(46, 204, 113, 0.15) !important;
         }
 
         .unpaid-row td {
-            background-color: rgba(231, 76, 60, 0.15) !important; /* Màu đỏ nhạt */
+            background-color: rgba(231, 76, 60, 0.15) !important;
         }
-        /* Đảm bảo hover vẫn hoạt động trên các hàng có màu nền */
+        
         .paid-row:hover td, .unpaid-row:hover td {
-            background-color: rgba(52, 152, 219, 0.15) !important; /* Giữ màu hover */
+            background-color: rgba(52, 152, 219, 0.15) !important;
         }
-        /* Đảm bảo các hàng chẵn không ghi đè màu trạng thái */
+        
         tr:nth-child(even).paid-row td {
             background-color: rgba(46, 204, 113, 0.15) !important;
         }
+        
         tr:nth-child(even).unpaid-row td {
             background-color: rgba(231, 76, 60, 0.15) !important;
         }
@@ -171,6 +175,7 @@
         
         .action-buttons {
             display: flex;
+            justify-content: center;
             gap: 8px;
         }
         
@@ -267,6 +272,7 @@
             color: var(--primary-dark);
             font-size: 1.1rem;
             border-top: 2px solid var(--table-border);
+            text-align: center;
         }
         
         .instructions {
@@ -392,8 +398,7 @@
             }
             
             .table-header {
-                flex-direction: column;
-                align-items: flex-start;
+                justify-content: center;
             }
             
             .input-row {
@@ -470,7 +475,6 @@
                
         <div class="table-container">
             <div class="table-header">
-                <h2>Danh sách đơn hàng</h2>
                 <button id="newOrderBtn" class="btn-add">
                     <i class="fas fa-plus-circle"></i> Thêm đơn hàng
                 </button>
