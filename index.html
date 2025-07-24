@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đặt Mua Quả Bơ</title>
+    <title>Quản lý đơn đặt bơ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -24,41 +24,65 @@
             --gray: #95a5a6;
             --border: #dfe6e9;
             --table-border: #d1d8e0;
+            --success-light: rgba(46, 204, 113, 0.1);
+            --danger-light: rgba(231, 76, 60, 0.1);
+            --card-shadow: 0 5px 15px rgba(0,0,0,0.08);
         }
         
         body {
-            background-color: #f0f4f8;
+            background: linear-gradient(135deg, #e3f2fd, #f8f9fa);
             color: var(--dark);
             line-height: 1.6;
+            min-height: 100vh;
             padding: 20px 10px;
         }
         
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
             background: white;
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            box-shadow: var(--card-shadow);
             overflow: hidden;
+            position: relative;
         }
         
         header {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             padding: 25px 20px;
-            text-align: center;
             position: relative;
+            overflow: hidden;
         }
         
         .header-content {
-            max-width: 700px;
+            max-width: 100%;
             margin: 0 auto;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .header-text {
+            flex: 1;
+            min-width: 300px;
         }
         
         h1 {
             font-size: 2.2rem;
             margin-bottom: 10px;
             font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
         }
         
         .price-tag {
@@ -70,8 +94,94 @@
             font-weight: 600;
             margin: 15px 0;
             backdrop-filter: blur(5px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
         }
         
+        .price-tag:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        /* Controls */
+        .controls {
+            padding: 20px;
+            background: white;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: var(--light);
+        }
+        
+        .search-box input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+            background: white;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--light);
+            color: var(--dark);
+        }
+        
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* Table Container */
         .table-container {
             overflow-x: auto;
             padding: 20px;
@@ -80,8 +190,11 @@
         
         .table-header {
             display: flex;
-            justify-content: flex-end;
-            margin-bottom: 15px;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
         }
         
         table {
@@ -90,8 +203,9 @@
             border-spacing: 0;
             min-width: 700px;
             border: 1px solid var(--table-border);
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
         }
         
         th {
@@ -102,6 +216,8 @@
             border-bottom: 2px solid var(--table-border);
             border-right: 1px solid rgba(255,255,255,0.2);
             text-align: center;
+            position: sticky;
+            top: 0;
         }
         
         th:last-child {
@@ -114,6 +230,7 @@
             border-right: 1px solid var(--table-border);
             background-color: white;
             text-align: center;
+            transition: background-color 0.2s;
         }
         
         td:last-child {
@@ -139,11 +256,11 @@
 
         /* CSS cho trạng thái thanh toán */
         .paid-row td {
-            background-color: rgba(46, 204, 113, 0.15) !important;
+            background-color: var(--success-light) !important;
         }
 
         .unpaid-row td {
-            background-color: rgba(231, 76, 60, 0.15) !important;
+            background-color: var(--danger-light) !important;
         }
         
         .paid-row:hover td, .unpaid-row:hover td {
@@ -158,16 +275,16 @@
             background-color: rgba(231, 76, 60, 0.15) !important;
         }
         
-        input, textarea {
+        input, textarea, select {
             width: 100%;
             padding: 10px;
             border: 1px solid var(--border);
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 1rem;
             transition: all 0.3s;
         }
         
-        input:focus, textarea:focus {
+        input:focus, textarea:focus, select:focus {
             border-color: var(--primary);
             outline: none;
             box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
@@ -180,9 +297,9 @@
         }
         
         button {
-            padding: 8px 16px;
+            padding: 10px 16px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s;
@@ -202,11 +319,13 @@
         }
         
         .btn-add {
-            background-color: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             padding: 12px 24px;
             font-size: 1.1rem;
             white-space: nowrap;
+            border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.4);
         }
         
         .btn-secondary {
@@ -220,8 +339,8 @@
         }
         
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
         
         button:active {
@@ -237,16 +356,19 @@
         }
         
         .btn-add:hover {
-            background-color: var(--primary-dark);
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 6px 15px rgba(46, 204, 113, 0.5);
         }
         
         .input-row {
             padding: 20px;
             background-color: var(--light);
-            border-radius: 8px;
+            border-radius: 12px;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
+            gap: 20px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
         }
         
         .input-group {
@@ -281,6 +403,7 @@
             border-radius: 8px;
             margin: 0 20px 20px;
             font-size: 0.95rem;
+            border-left: 4px solid var(--secondary);
         }
         
         .instructions ul {
@@ -299,16 +422,19 @@
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             margin-top: 20px;
+            border-radius: 0 0 16px 16px;
         }
         
         .summary-footer-item {
             text-align: center;
+            padding: 10px;
         }
         
         .summary-footer-value {
             font-size: 1.8rem;
             font-weight: 700;
             margin-top: 5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         
         .modal {
@@ -322,6 +448,7 @@
             z-index: 1000;
             align-items: center;
             justify-content: center;
+            backdrop-filter: blur(3px);
         }
         
         .modal-content {
@@ -331,8 +458,8 @@
             max-width: 600px;
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            animation: modalOpen 0.3s ease-out;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            animation: modalOpen 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         
         .modal-header {
@@ -356,6 +483,11 @@
             font-size: 1.8rem;
             cursor: pointer;
             padding: 5px;
+            transition: transform 0.3s;
+        }
+        
+        .close-modal:hover {
+            transform: rotate(90deg);
         }
         
         .modal-body {
@@ -375,7 +507,18 @@
         @keyframes modalOpen {
             from {
                 opacity: 0;
-                transform: translateY(-50px);
+                transform: scale(0.8) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
             }
             to {
                 opacity: 1;
@@ -383,9 +526,14 @@
             }
         }
         
+        .fade-in {
+            animation: fadeIn 0.4s ease forwards;
+        }
+        
         @media (max-width: 768px) {
             .header-content {
-                padding: 0 10px;
+                flex-direction: column;
+                align-items: flex-start;
             }
             
             h1 {
@@ -398,7 +546,8 @@
             }
             
             .table-header {
-                justify-content: center;
+                flex-direction: column;
+                align-items: stretch;
             }
             
             .input-row {
@@ -415,7 +564,7 @@
             }
             
             th, td {
-                padding: 10px 8px;
+                padding: 12px 8px;
                 font-size: 0.9rem;
             }
         }
@@ -431,25 +580,35 @@
                 gap: 5px;
             }
             
+            .action-buttons button {
+                width: 100%;
+                justify-content: center;
+            }
+            
             .modal-content {
                 width: 95%;
             }
             
             th, td {
-                padding: 8px 6px;
+                padding: 10px 6px;
                 font-size: 0.85rem;
             }
             
             .btn-edit, .btn-delete {
                 font-size: 0.85rem;
-                padding: 6px 10px;
+                padding: 8px 12px;
+            }
+            
+            .header-actions {
+                width: 100%;
+                justify-content: center;
             }
         }
         
         .status-text {
             display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 6px 12px;
+            border-radius: 50px;
             font-size: 0.85rem;
             font-weight: 600;
         }
@@ -463,63 +622,117 @@
             background-color: rgba(231, 76, 60, 0.2);
             color: #c0392b;
         }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: var(--border);
+        }
+        
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        .empty-state p {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .avocado-bg {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 200px;
+            height: 200px;
+            opacity: 0.1;
+            z-index: 1;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
+            <svg class="avocado-bg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16.1 5.5C15.3 4.5 14.3 3.7 13.1 3.1C11.9 2.5 10.6 2.2 9.2 2.2C7.8 2.2 6.5 2.5 5.3 3.1C4.1 3.7 3.1 4.5 2.3 5.5C1.5 6.5 1 7.7 1 9C1 10.3 1.3 11.5 1.9 12.7C2.5 13.9 3.3 14.9 4.3 15.7C5.3 16.5 6.5 17 7.9 17.3C8.1 17.3 8.3 17.4 8.5 17.4C8.7 17.4 8.9 17.5 9.1 17.5C9.3 17.5 9.5 17.6 9.7 17.6C9.9 17.6 10.1 17.7 10.3 17.7C10.5 17.7 10.7 17.7 10.9 17.7C11.1 17.7 11.3 17.7 11.5 17.7C11.7 17.7 11.9 17.7 12.1 17.7C12.3 17.7 12.5 17.7 12.7 17.7C12.9 17.7 13.1 17.6 13.3 17.6C13.5 17.6 13.7 17.5 13.9 17.5C14.1 17.5 14.3 17.4 14.5 17.4C14.7 17.4 14.9 17.3 15.1 17.3C16.5 17 17.7 16.5 18.7 15.7C19.7 14.9 20.5 13.9 21.1 12.7C21.7 11.5 22 10.3 22 9C22 7.7 21.5 6.5 20.7 5.5C19.9 4.5 18.9 3.7 17.7 3.1C16.5 2.5 15.2 2.2 13.8 2.2C12.4 2.2 11.1 2.5 9.9 3.1C8.7 3.7 7.7 4.5 6.9 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 7C12 7 13 5 15 5C17 5 18 7 18 9C18 11 17 13 15 13C13 13 12 11 12 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
             <div class="header-content">
-                <h1>DANH SÁCH KHÁCH ĐẶT MUA QUẢ BƠ</h1>
+                <div class="header-text">
+                    <h1>QUẢN LÝ ĐƠN ĐẶT BƠ</h1>
+                    <div class="price-tag">
+                        <i class="fas fa-tag"></i> Giá bơ: 20,000đ/kg
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-add" id="newOrderBtn">
+                        <i class="fas fa-plus-circle"></i> Thêm đơn hàng
+                    </button>
+                </div>
             </div>
         </header>
-               
+        
+        <div class="controls">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Tìm kiếm đơn hàng...">
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">
+                    <i class="fas fa-list"></i> Tất cả
+                </button>
+                <button class="filter-btn" data-filter="paid">
+                    <i class="fas fa-check-circle"></i> Đã thanh toán
+                </button>
+                <button class="filter-btn" data-filter="unpaid">
+                    <i class="fas fa-clock"></i> Chưa thanh toán
+                </button>
+            </div>
+        </div>
+        
         <div class="table-container">
             <div class="table-header">
-                <button id="newOrderBtn" class="btn-add">
-                    <i class="fas fa-plus-circle"></i> Thêm đơn hàng
-                </button>
+                <!-- Đã bỏ phần thống kê ở đây -->
             </div>
             
             <table id="orderTable">
                 <thead>
                     <tr>
-                        <th width="40">STT</th>
+                        <th width="50">STT</th>
                         <th>Tên khách hàng</th>
-                        <th width="120">Số điện thoại</th>
+                        <th width="130">Số điện thoại</th>
                         <th>Địa chỉ</th>
-                        <th width="80">Số kg</th>
-                        <th width="120">Số tiền (đ)</th>
-                        <th width="120">Trạng thái</th>
-                        <th width="140">Hành động</th>
+                        <th width="90">Số kg</th>
+                        <th width="130">Số tiền (đ)</th>
+                        <th width="130">Trạng thái</th>
+                        <th width="160">Hành động</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
                     <!-- Dữ liệu sẽ được thêm ở đây bằng JavaScript -->
                 </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="4" style="text-align: right;">Tổng cộng:</td>
-                        <td id="footer-kg">0</td>
-                        <td id="footer-money">0</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </tfoot>
             </table>
         </div>
         
         <div class="summary-footer">
             <div class="summary-footer-item">
                 <div>Tổng số kg</div>
-                <div class="summary-footer-value" id="total-kg">0</div>
+                <div class="summary-footer-value" id="footer-kg">0.0</div>
             </div>
             <div class="summary-footer-item">
-                <div>Tổng số tiền</div>
-                <div class="summary-footer-value" id="total-money">0đ</div>
+                <div>Tổng doanh thu</div>
+                <div class="summary-footer-value" id="footer-money">0đ</div>
             </div>
             <div class="summary-footer-item">
                 <div>Tổng đơn hàng</div>
-                <div class="summary-footer-value" id="total-orders">0</div>
+                <div class="summary-footer-value" id="footer-orders">0</div>
             </div>
         </div>
     </div>
@@ -560,8 +773,10 @@
                     </div>
 
                     <div class="input-group">
-                        <input type="checkbox" id="isPaidCheckbox" style="width: auto; margin-right: 10px;">
-                        <label for="isPaidCheckbox" style="display: inline-block;">Đã thanh toán</label>
+                        <div style="display: flex; align-items: center;">
+                            <input type="checkbox" id="isPaidCheckbox" style="width: auto; margin-right: 10px;">
+                            <label for="isPaidCheckbox" style="display: inline-block; margin: 0;">Đã thanh toán</label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -581,6 +796,7 @@
         // Hằng số giá bơ
         const AVOCADO_PRICE = 20000;
         let editingIndex = null;
+        let currentFilter = 'all';
         
         // Khởi tạo dữ liệu
         let orders = JSON.parse(localStorage.getItem('avocadoOrders')) || [];
@@ -599,6 +815,8 @@
         const orderKg = document.getElementById('orderKg');
         const orderMoney = document.getElementById('orderMoney');
         const isPaidCheckbox = document.getElementById('isPaidCheckbox');
+        const searchInput = document.getElementById('searchInput');
+        const filterButtons = document.querySelectorAll('.filter-btn');
         
         // Tải dữ liệu khi trang được mở
         document.addEventListener('DOMContentLoaded', () => {
@@ -620,6 +838,25 @@
                 } else {
                     orderKg.value = '';
                 }
+            });
+            
+            // Sự kiện tìm kiếm
+            searchInput.addEventListener('input', function() {
+                renderTable();
+                updateSummary();
+            });
+            
+            // Sự kiện lọc
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Loại bỏ active class khỏi tất cả các nút
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    // Thêm active class cho nút được click
+                    this.classList.add('active');
+                    currentFilter = this.dataset.filter;
+                    renderTable();
+                    updateSummary();
+                });
             });
         });
         
@@ -696,23 +933,44 @@
         function renderTable() {
             tableBody.innerHTML = '';
             
-            if (orders.length === 0) {
+            // Lọc và tìm kiếm đơn hàng
+            let filteredOrders = orders;
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            if (searchTerm) {
+                filteredOrders = filteredOrders.filter(order => 
+                    order.name.toLowerCase().includes(searchTerm) ||
+                    (order.phone && order.phone.toLowerCase().includes(searchTerm)) ||
+                    (order.address && order.address.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            if (currentFilter === 'paid') {
+                filteredOrders = filteredOrders.filter(order => order.isPaid);
+            } else if (currentFilter === 'unpaid') {
+                filteredOrders = filteredOrders.filter(order => !order.isPaid);
+            }
+            
+            if (filteredOrders.length === 0) {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td colspan="8" style="text-align: center; padding: 30px;">
-                        <i class="fas fa-shopping-cart" style="font-size: 3rem; color: var(--gray); margin-bottom: 15px;"></i>
-                        <h3>Chưa có đơn hàng nào</h3>
-                        <p>Nhấn "Thêm đơn hàng" để bắt đầu</p>
+                    <td colspan="8">
+                        <div class="empty-state">
+                            <i class="fas fa-shopping-basket"></i>
+                            <h3>Không tìm thấy đơn hàng</h3>
+                            <p>Không có đơn hàng nào phù hợp với tiêu chí tìm kiếm hoặc bộ lọc của bạn</p>
+                        </div>
                     </td>
                 `;
                 tableBody.appendChild(row);
                 return;
             }
             
-            orders.forEach((order, index) => {
+            filteredOrders.forEach((order, index) => {
                 const row = document.createElement('tr');
                 // Thêm lớp CSS dựa trên trạng thái thanh toán
                 row.classList.add(order.isPaid ? 'paid-row' : 'unpaid-row');
+                row.classList.add('fade-in');
                 
                 row.innerHTML = `
                     <td>${index + 1}</td>
@@ -723,31 +981,21 @@
                     <td>${order.money.toLocaleString('vi-VN')}đ</td>
                     <td>
                         <span class="status-text ${order.isPaid ? 'paid-text' : 'unpaid-text'}">
+                            <i class="fas ${order.isPaid ? 'fa-check-circle' : 'fa-clock'}"></i> 
                             ${order.isPaid ? 'Đã thanh toán' : 'Chưa thanh toán'}
                         </span>
                     </td>
                     <td class="action-buttons">
-                        <button class="btn-edit" onclick="editOrder(${index})">
-                            <i class="fas fa-edit"></i>
+                        <button class="btn-edit" onclick="editOrder(${orders.indexOf(order)})">
+                            <i class="fas fa-edit"></i> Sửa
                         </button>
-                        <button class="btn-delete" onclick="deleteOrder(${index})">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                        <button class="btn-toggle-paid" data-index="${index}" style="background: var(--secondary); color: white;">
-                            <i class="fas ${order.isPaid ? 'fa-times' : 'fa-check'}"></i>
+                        <button class="btn-delete" onclick="deleteOrder(${orders.indexOf(order)})">
+                            <i class="fas fa-trash"></i> Xóa
                         </button>
                     </td>
                 `;
                 
                 tableBody.appendChild(row);
-            });
-
-            // Thêm sự kiện cho các nút toggle sau khi render bảng
-            document.querySelectorAll('.btn-toggle-paid').forEach(button => {
-                button.addEventListener('click', function() {
-                    const index = parseInt(this.dataset.index);
-                    togglePaidStatus(index);
-                });
             });
         }
         
@@ -755,18 +1003,38 @@
         function updateSummary() {
             let totalKg = 0;
             let totalMoney = 0;
+            let paidOrders = 0;
+            let unpaidOrders = 0;
             
-            orders.forEach(order => {
+            // Lọc đơn hàng dựa trên tìm kiếm và bộ lọc
+            let filteredOrders = orders;
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            if (searchTerm) {
+                filteredOrders = filteredOrders.filter(order => 
+                    order.name.toLowerCase().includes(searchTerm) ||
+                    (order.phone && order.phone.toLowerCase().includes(searchTerm)) ||
+                    (order.address && order.address.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            if (currentFilter === 'paid') {
+                filteredOrders = filteredOrders.filter(order => order.isPaid);
+            } else if (currentFilter === 'unpaid') {
+                filteredOrders = filteredOrders.filter(order => !order.isPaid);
+            }
+            
+            filteredOrders.forEach(order => {
                 totalKg += order.kg;
                 totalMoney += order.money;
+                if (order.isPaid) paidOrders++;
+                else unpaidOrders++;
             });
             
-            document.getElementById('total-kg').textContent = totalKg.toFixed(1);
-            document.getElementById('total-money').textContent = totalMoney.toLocaleString('vi-VN') + 'đ';
-            document.getElementById('total-orders').textContent = orders.length;
-            
+            // Cập nhật footer
             document.getElementById('footer-kg').textContent = totalKg.toFixed(1);
             document.getElementById('footer-money').textContent = totalMoney.toLocaleString('vi-VN') + 'đ';
+            document.getElementById('footer-orders').textContent = filteredOrders.length;
         }
         
         // Hàm chỉnh sửa đơn hàng
@@ -790,19 +1058,24 @@
         // Hàm xóa đơn hàng
         function deleteOrder(index) {
             if (confirm('Bạn có chắc chắn muốn xóa đơn hàng này?')) {
-                orders.splice(index, 1);
-                saveData();
-                renderTable();
-                updateSummary();
+                // Thêm hiệu ứng xóa
+                const row = document.querySelector(`tr:nth-child(${index + 1})`);
+                if (row) {
+                    row.style.opacity = 0;
+                    row.style.transform = 'translateX(-50px)';
+                    setTimeout(() => {
+                        orders.splice(index, 1);
+                        saveData();
+                        renderTable();
+                        updateSummary();
+                    }, 300);
+                } else {
+                    orders.splice(index, 1);
+                    saveData();
+                    renderTable();
+                    updateSummary();
+                }
             }
-        }
-
-        // Hàm thay đổi trạng thái thanh toán
-        function togglePaidStatus(index) {
-            orders[index].isPaid = !orders[index].isPaid;
-            saveData();
-            renderTable();
-            updateSummary();
         }
         
         // Hàm reset form nhập liệu
